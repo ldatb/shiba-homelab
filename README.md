@@ -3,7 +3,7 @@
 <div align="center">
 
 <h1>
-    <img align="center" width=400px src="logo.svg">
+    <img align="center" width=400px src="assets/logo.svg">
 </h1>
 
 <div style="display:flex; justify-content:center; gap: 15px;">
