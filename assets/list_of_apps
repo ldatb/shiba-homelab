@@ -1,0 +1,29 @@
+Server Management:
+Flame
+Cockpit
+OpenVPN
+Healthchecks
+Glances
+
+File storage & sharing:
+NextCloud
+Immich
+Paperless-NGX
+PrivateBin
+Kopia
+
+Security:
+BitWarden
+
+Development tools:
+Gitea
+Harbor
+Jenkins
+
+Services:
+TrueNAS Core
+Grafana
+NGINX
+MetalLB
+ExternalDNS
+Cert-manager
