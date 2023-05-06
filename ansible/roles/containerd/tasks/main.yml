@@ -1,0 +1,16 @@
+- name: Install containerd
+  apt:
+    name:
+    - containerd.io
+    state: present
+    update-cache: yes
+
+- name: Restart containerd
+  service:
+    name: containerd
+    daemon_reload: yes
+    state: restarted
+    enabled: true
+
+- name: Prepare containerd for Kubernetes
+  include_tasks: prepare_for_k8s.yml

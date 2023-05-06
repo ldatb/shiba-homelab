@@ -1,0 +1,73 @@
+# Packages and dependencies
+- name: Update & Upgrade packages
+  apt:
+    upgrade: yes
+    update_cache: yes
+
+- name: Install dependencies
+  apt:
+    name:
+      - ufw
+      - vim
+      - nano
+      - curl
+      - ca-certificates
+      - apt-transport-https
+      - gnupg
+      - lsb-release
+      - software-properties-common
+      - nginx
+      - openssl
+      - systemd
+      - python
+      - python3
+      - python3-pip
+    state: present
+    update-cache: yes
+
+- name: Install pip dependencies
+  pip:
+    name: 
+      - pyyaml
+
+# Firewall
+- name: Allow SSH ports
+  ufw:
+    rule: allow
+    name: "{{ item }}"
+  with_items: 
+    - OpenSSH
+    - ssh
+
+- name: Alow tcp ports
+  ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: tcp
+  with_items: 
+    - "{{ ports }}"
+
+- name: Allow Kubernetes TCP ports
+  ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: tcp
+  with_items: 
+    - 2379 
+    - 2380 
+    - 6443 
+    - 10250
+
+- name: Allow Kubernetes UDP ports
+  ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: udp
+  with_items: 
+    - 8472
+    - 51820
+    - 51821
+
+- name: Enable the firewall
+  ufw:
+    state: enabled

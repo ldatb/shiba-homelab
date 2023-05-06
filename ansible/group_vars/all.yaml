@@ -1,0 +1,19 @@
+ansible_user: user
+ansible_become_pass: password
+
+architecture: amd64
+
+k3s_version: v1.23.5+k3s1
+
+# Don't change these unless you want to disable an app
+ports:
+  - 80    # http
+  - 443   # https
+  - 9090  # cockpit
+  - 3000  # flame
+  - 3030  # grafana
+  - 61208 # glances
+
+# K3s configuration
+k3s_server_location: /var/lib/rancher/k3s
+master_ip: "{{ hostvars[groups['master'][0]]['ansible_host'] | default(groups['master'][0]) }}"

@@ -1,0 +1,9 @@
+# User credentials
+ansible_user: user
+ansible_become_pass: passwd
+
+# Machine's architecture
+architecture: amd64
+
+# What version of K3s to install
+k3s_version: v1.23.5+k3s1

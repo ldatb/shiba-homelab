@@ -1,0 +1,45 @@
+- name: Install QEMU / KVM components
+  apt:
+    name:
+      - qemu-kvm
+      - libvirt-daemon-system
+      - libvirt-clients
+      - python3-libvirt
+      - python3-lxml
+      - bridge-utils
+      - cloud-image-utils
+      - virtinst
+      - cockpit # This is a web dashboard for KVM
+      - cockpit-machines # This is a web dashboard for KVM
+    state: present
+    update-cache: yes
+
+- name: Start libvirt services
+  service:
+    name: libvirtd
+    enabled: true
+    state: started
+
+- name: Check / Create QEMU images directory
+  file:
+    state: directory
+    path: /virt/images
+
+- name: Get Debian cloud image
+  get_url:
+    url: https://cloud.debian.org/images/cloud/bullseye/latest/debian-11-genericcloud-amd64.qcow2
+    dest: /virt/images/debian-11-genericcloud-amd64.qcow2
+
+- name: Create VMs directory
+  file:
+    state: directory
+    path: /virt/vms
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Start cockpit
+  service:
+    name: cockpit
+    enabled: true
+    state: started

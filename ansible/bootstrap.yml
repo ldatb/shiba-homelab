@@ -1,0 +1,9 @@
+- name: Bootstrap the homelab
+  hosts: master
+  gather_facts: yes
+  roles:
+  - { role: dependencies, become: true }
+  - { role: virtualization, become: true }
+  - { role: docker, become: true }
+  - { role: containerd, become: true }
+  - { role: kubernetes, become: true }

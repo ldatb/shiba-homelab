@@ -1,0 +1,24 @@
+# Environments
+.venv/
+book/
+
+# Huge files
+*.iso
+*.log
+*kubeconfig.yaml
+Chart.lock
+
+# Terraform
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+
+# Key Pair files
+*.pem
+*.putty
+
+# Node_modules
+**/node_modules/*
+
+# Vagrant
+.vagrant/

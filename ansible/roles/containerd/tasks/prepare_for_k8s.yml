@@ -1,0 +1,70 @@
+
+- name: Prepare containerd for Kubernetes
+  template:
+    src: containerd_conf.j2
+    dest: "/etc/modules-load.d/containerd.conf"
+
+- name: Modprobe overlay module
+  modprobe:
+    name: overlay
+    state: present
+
+- name: Modprobe br_netfilter module
+  modprobe:
+    name: br_netfilter
+    state: present
+
+- name: Add br_netfilter config
+  command: echo 'net.bridge.bridge-nf-call-iptables = 1' > /etc/sysctl.d/20-bridge-nf.conf
+
+- name: Add network configs for containerd
+  template:
+    src: 99-kubernetes-cri-conf.j2
+    dest: "/etc/sysctl.d/99-kubernetes-cri.conf"
+
+- name: Apply sysctl params without reboot
+  command: sysctl --system
+
+- name: Ensure containerd config directory exists
+  file:
+    path: /etc/containerd
+    state: directory
+
+- name: Get defaults from containerd
+  command: containerd config default
+  register: containerd_config_default
+
+- name: Prepare containerd/config.toml from default config
+  copy:
+    dest: /tmp/containerd_config.toml
+    content: "{{ containerd_config_default.stdout }}"
+
+- name: Set Cgroup driver to systemd
+  lineinfile:
+    insertafter: '.*\[plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options\]$'
+    line: '          SystemdCgroup = true'
+    state: present
+    path: /tmp/containerd_config.toml
+
+- name: Make sure SystemdCgroup = false is not set
+  lineinfile:
+    path: /tmp/containerd_config.toml
+    state: absent
+    line: '            SystemdCgroup = false'
+
+- name: Copy config.toml to /etc/containerd
+  copy:
+    remote_src: true
+    src: /tmp/containerd_config.toml
+    dest: /etc/containerd/config.toml
+
+- name: Cleanup temporary file
+  file:
+    path: /tmp/containerd_config.toml
+    state: absent
+
+- name: Restart containerd
+  service:
+    name: containerd
+    daemon_reload: yes
+    state: restarted
